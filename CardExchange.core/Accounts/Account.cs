@@ -66,4 +66,30 @@ public sealed class Account
         _qtyAvailable[sku] = GetAvailable(sku) + qty;
     }
 
+    public void PayFromHeld(long cents)
+    {
+        if (cents <= 0) return;
+        CashHeldCents -= cents;
+        // does not return to available; it’s spent
+    }
+
+    public void ReceiveCash(long cents)
+    {
+        if (cents <= 0) return;
+        CashAvailableCents += cents;
+    }
+
+    public void ConsumeHeldForSell(SkuId sku, int qty)
+    {
+        if (qty <= 0) return;
+        _qtyHeld[sku] = GetHeld(sku) - qty;
+    }
+
+    public void AddInventoryToAvailable(SkuId sku, int qty)
+    {
+        if (qty <= 0) return;
+        _qtyAvailable[sku] = GetAvailable(sku) + qty;
+    }
+
+
 }
