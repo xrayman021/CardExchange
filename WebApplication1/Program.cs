@@ -69,8 +69,35 @@ app.MapGet("/accounts/{userId:guid}/balance", async (ExchangeHost host, Guid use
     await host.Enqueue(new GetBalanceCmd(userId, tcs));
     return Results.Ok(await tcs.Task);
 });
+app.MapPost("/orders/limit", async (ExchangeHost host, PlaceLimitOrderRequest req) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new PlaceLimitOrderCmd(req.UserId, req.Sku, req.Side, req.LimitPriceCents, req.Qty, tcs));
+    return Results.Ok(await tcs.Task);
+});
+
+app.MapPost("/orders/{orderId:guid}/cancel", async (ExchangeHost host, Guid orderId, Guid userId) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new CancelOrderCmd(userId, orderId, tcs));
+    return Results.Ok(await tcs.Task);
+});
+
+app.MapGet("/orders/open/{userId:guid}", async (ExchangeHost host, Guid userId) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new ListOpenOrdersCmd(userId, tcs));
+    return Results.Ok(await tcs.Task);
+});
 
 app.Run();
 
 public sealed record DepositCashRequest(long Cents);
 public sealed record DepositInvRequest(string Sku, int Qty);
+public sealed record PlaceLimitOrderRequest(
+    Guid UserId,
+    string Sku,
+    Side Side,
+    long LimitPriceCents,
+    int Qty
+);
