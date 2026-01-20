@@ -100,7 +100,4 @@ public sealed class Account
         foreach (var sku in keys)
             yield return (sku, GetAvailable(sku), GetHeld(sku));
     }
-
-
-
 }

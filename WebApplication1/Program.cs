@@ -95,6 +95,7 @@ app.MapGet("/orders/open/{userId:guid}", async (ExchangeHost host, Guid userId) 
     await host.Enqueue(new ListOpenOrdersCmd(userId, tcs));
     return Results.Ok(await tcs.Task);
 });
+
 app.MapGet("/book/top/{sku}", async (ExchangeHost host, string sku) =>
 {
     var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -108,6 +109,14 @@ app.MapGet("/trades/{sku}", async (ExchangeHost host, string sku, int limit = 50
     await host.Enqueue(new GetTradesCmd(sku, limit, tcs));
     return Results.Ok(await tcs.Task);
 });
+
+app.MapGet("/book/{sku}", async (ExchangeHost host, string sku, int depth = 20) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new GetBookSnapshotCmd(sku, depth, tcs));
+    return Results.Ok(await tcs.Task);
+});
+
 
 
 app.Run();

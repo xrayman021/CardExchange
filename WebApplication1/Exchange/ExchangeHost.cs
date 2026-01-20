@@ -167,17 +167,17 @@ public sealed class ExchangeHost : BackgroundService
                                 break;
                             }
                         case GetBookSnapshotCmd g:
+                        {
+                            var sku = new SkuId(g.Sku);
+                            var book = _state.GetBook(sku);
+                            g.Tcs.SetResult(new
                             {
-                                var sku = new CardExchange.Core.Domain.SkuId(g.Sku);
-                                var book = _state.GetBook(sku);
-                                g.Tcs.SetResult(new
-                                {
-                                    sku = g.Sku,
-                                    depth = g.Depth,
-                                    book = book.Snapshot(g.Depth)
-                                });
-                                break;
-                            }
+                                sku = g.Sku,
+                                depth = g.Depth,
+                                book = book.Snapshot(g.Depth)
+                            });
+                            break;
+                        }
 
 
 
