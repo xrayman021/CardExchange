@@ -32,4 +32,38 @@ public sealed class Account
         if (qty <= 0) throw new ArgumentOutOfRangeException(nameof(qty));
         _qtyAvailable[sku] = GetAvailable(sku) + qty;
     }
+
+    public bool TryHoldCash(long cents)
+    {
+        if (cents <= 0) return false;
+        if (CashAvailableCents < cents) return false;
+        CashAvailableCents -= cents;
+        CashHeldCents += cents;
+        return true;
+    }
+
+    public void ReleaseCash(long cents)
+    {
+        if (cents <= 0) return;
+        CashHeldCents -= cents;
+        CashAvailableCents += cents;
+    }
+
+    public bool TryHoldInventory(SkuId sku, int qty)
+    {
+        if (qty <= 0) return false;
+        var avail = GetAvailable(sku);
+        if (avail < qty) return false;
+        _qtyAvailable[sku] = avail - qty;
+        _qtyHeld[sku] = GetHeld(sku) + qty;
+        return true;
+    }
+
+    public void ReleaseInventory(SkuId sku, int qty)
+    {
+        if (qty <= 0) return;
+        _qtyHeld[sku] = GetHeld(sku) - qty;
+        _qtyAvailable[sku] = GetAvailable(sku) + qty;
+    }
+
 }

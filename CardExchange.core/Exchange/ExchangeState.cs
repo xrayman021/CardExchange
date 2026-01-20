@@ -11,6 +11,8 @@ using CardExchange.Core.Accounts;
 public sealed class ExchangeState
 {
     private readonly Dictionary<Guid, Account> _accounts = new();
+    private readonly Dictionary<Guid, Order> _orders = new();
+    private long _seq = 0;
 
     public Account GetOrCreateAccount(Guid userId)
     {
@@ -24,5 +26,18 @@ public sealed class ExchangeState
 
     public Account? TryGetAccount(Guid userId)
         => _accounts.TryGetValue(userId, out var acct) ? acct : null;
-}
 
+    public Order AddOrder(Order order)
+    {
+        _orders[order.Id] = order;
+        return order;
+    }
+
+    public long NextSeq() => ++_seq;
+
+    public Order? TryGetOrder(Guid orderId)
+        => _orders.TryGetValue(orderId, out var o) ? o : null;
+
+    public IEnumerable<Order> OpenOrdersForUser(Guid userId)
+        => _orders.Values.Where(o => o.UserId == userId && o.Status == OrderStatus.Open);
+}
