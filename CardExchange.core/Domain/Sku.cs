@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace CardExchange.core.Domain
 {
-    internal class Sku
-    {
-    }
+    public readonly record struct SkuId(string Value);
+
+    public sealed record Sku(
+        SkuId Id,
+        string Game,
+        string ProductName,
+        string ProductType,
+        string Language,
+        string Region
+    );
+
 }
