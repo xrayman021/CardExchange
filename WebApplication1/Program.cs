@@ -1,6 +1,7 @@
 using CardExchange.Api.Exchange;
 using CardExchange.core.Domain;
 using CardExchange.Core.Exchange;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ExchangeState>();
 builder.Services.AddSingleton<ExchangeHost>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<ExchangeHost>());
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 
 var app = builder.Build();
 
@@ -89,6 +95,29 @@ app.MapGet("/orders/open/{userId:guid}", async (ExchangeHost host, Guid userId) 
     await host.Enqueue(new ListOpenOrdersCmd(userId, tcs));
     return Results.Ok(await tcs.Task);
 });
+
+app.MapGet("/book/top/{sku}", async (ExchangeHost host, string sku) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new GetBookTopCmd(sku, tcs));
+    return Results.Ok(await tcs.Task);
+});
+
+app.MapGet("/trades/{sku}", async (ExchangeHost host, string sku, int limit = 50) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new GetTradesCmd(sku, limit, tcs));
+    return Results.Ok(await tcs.Task);
+});
+
+app.MapGet("/book/{sku}", async (ExchangeHost host, string sku, int depth = 20) =>
+{
+    var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+    await host.Enqueue(new GetBookSnapshotCmd(sku, depth, tcs));
+    return Results.Ok(await tcs.Task);
+});
+
+
 
 app.Run();
 
