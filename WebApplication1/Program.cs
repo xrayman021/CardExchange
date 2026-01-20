@@ -10,9 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//
+
 // Exchange services (go here, before builder.Build())
-// 
 builder.Services.AddSingleton<ExchangeState>();
 builder.Services.AddSingleton<ExchangeHost>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<ExchangeHost>());
