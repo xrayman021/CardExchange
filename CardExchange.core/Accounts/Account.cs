@@ -91,5 +91,16 @@ public sealed class Account
         _qtyAvailable[sku] = GetAvailable(sku) + qty;
     }
 
+    public IEnumerable<(SkuId sku, int available, int held)> InventorySnapshot()
+    {
+        // union of keys from both dictionaries
+        var keys = new HashSet<SkuId>(_qtyAvailable.Keys);
+        keys.UnionWith(_qtyHeld.Keys);
+
+        foreach (var sku in keys)
+            yield return (sku, GetAvailable(sku), GetHeld(sku));
+    }
+
+
 
 }

@@ -40,16 +40,35 @@ public sealed class ExchangeHost : BackgroundService
                             break;
                         }
                         case GetBalanceCmd b:
-                        {
-                            var acct = _state.TryGetAccount(b.UserId);
-                            if (acct is null)
                             {
-                                b.Tcs.SetResult(new { userId = b.UserId, exists = false });
+                                var acct = _state.TryGetAccount(b.UserId);
+                                if (acct is null)
+                                {
+                                    b.Tcs.SetResult(new { userId = b.UserId, exists = false });
+                                    break;
+                                }
+
+                                var inv = acct.InventorySnapshot()
+                                              .Select(x => new
+                                              {
+                                                  sku = x.sku.Value,
+                                                  qtyAvailable = x.available,
+                                                  qtyHeld = x.held
+                                              })
+                                              .ToArray();
+
+                                b.Tcs.SetResult(new
+                                {
+                                    userId = acct.UserId,
+                                    exists = true,
+                                    cashAvailableCents = acct.CashAvailableCents,
+                                    cashHeldCents = acct.CashHeldCents,
+                                    inventory = inv
+                                });
+
                                 break;
                             }
-                            b.Tcs.SetResult(new { acct.UserId, exists = true, acct.CashAvailableCents, acct.CashHeldCents });
-                            break;
-                        }
+
                         case PlaceLimitOrderCmd p:
                             {
                                 var acct = _state.GetOrCreateAccount(p.UserId);
