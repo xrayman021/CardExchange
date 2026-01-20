@@ -96,11 +96,6 @@ public sealed class ExchangeHost : BackgroundService
 
                                 p.Tcs.SetResult(new { ok = true, order });
                                 break;
-
-
-
-                                p.Tcs.SetResult(new { ok = true, order });
-                                break;
                             }
 
                         case CancelOrderCmd c:
