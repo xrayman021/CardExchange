@@ -131,6 +131,24 @@ public sealed class ExchangeHost : BackgroundService
                                 break;
                             }
 
+                        case GetBookTopCmd g:
+                            {
+                                var sku = new SkuId(g.Sku);
+                                var book = _state.GetBook(sku);
+                                var (bid, ask) = book.BestBidAsk();
+                                g.Tcs.SetResult(new { sku = g.Sku, bestBidCents = bid, bestAskCents = ask });
+                                break;
+                            }
+
+                        case GetTradesCmd gt:
+                            {
+                                var sku = new SkuId(gt.Sku);
+                                var trades = _state.RecentTrades(sku, gt.Limit).ToArray();
+                                gt.Tcs.SetResult(new { sku = gt.Sku, trades });
+                                break;
+                            }
+
+
                     }
                 }
                 catch (Exception ex)
