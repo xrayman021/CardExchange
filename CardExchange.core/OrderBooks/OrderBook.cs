@@ -55,5 +55,35 @@ public sealed class OrderBook
         long? ask = _asks.Count == 0 ? null : _asks.First().Key;
         return (bid, ask);
     }
+
+    public object Snapshot(int depth = 20)
+    {
+        var bids = _bids
+            .Take(depth)
+            .Select(kvp => new
+            {
+                priceCents = kvp.Key,
+                qty = kvp.Value.Where(o => o.Status == Exchange.OrderStatus.Open)
+                               .Sum(o => o.QtyRemaining),
+                orders = kvp.Value.Count
+            })
+            .Where(x => x.qty > 0)
+            .ToArray();
+
+        var asks = _asks
+            .Take(depth)
+            .Select(kvp => new
+            {
+                priceCents = kvp.Key,
+                qty = kvp.Value.Where(o => o.Status == Exchange.OrderStatus.Open)
+                               .Sum(o => o.QtyRemaining),
+                orders = kvp.Value.Count
+            })
+            .Where(x => x.qty > 0)
+            .ToArray();
+
+        return new { bids, asks };
+    }
+
 }
 
