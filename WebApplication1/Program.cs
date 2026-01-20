@@ -1,6 +1,7 @@
 using CardExchange.Api.Exchange;
 using CardExchange.core.Domain;
 using CardExchange.Core.Exchange;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ExchangeState>();
 builder.Services.AddSingleton<ExchangeHost>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<ExchangeHost>());
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 
 var app = builder.Build();
 
