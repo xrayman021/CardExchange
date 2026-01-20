@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36717.8 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{BCD42E1B-0872-467A-AA83-FD54CBB71EEB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardExchange.api", "WebApplication1\CardExchange.api.csproj", "{BCD42E1B-0872-467A-AA83-FD54CBB71EEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardExchange.core", "CardExchange.core\CardExchange.core.csproj", "{33880AAD-CABA-4F4D-9EBA-026086FCF608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{BCD42E1B-0872-467A-AA83-FD54CBB71EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCD42E1B-0872-467A-AA83-FD54CBB71EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCD42E1B-0872-467A-AA83-FD54CBB71EEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33880AAD-CABA-4F4D-9EBA-026086FCF608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33880AAD-CABA-4F4D-9EBA-026086FCF608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33880AAD-CABA-4F4D-9EBA-026086FCF608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33880AAD-CABA-4F4D-9EBA-026086FCF608}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
