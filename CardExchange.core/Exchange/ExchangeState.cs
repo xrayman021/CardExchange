@@ -29,7 +29,6 @@ public sealed class ExchangeState
 
     public Order AddOrder(Order order)
     {
-        var withSeq = order with { }; // can’t with-init on class; keep as-is
         _orders[order.Id] = order;
         return order;
     }
