@@ -30,3 +30,7 @@ public sealed record ListOpenOrdersCmd(
     TaskCompletionSource<object> Tcs
 ) : IExchangeCommand;
 
+public sealed record GetBookTopCmd(string Sku, TaskCompletionSource<object> Tcs) : IExchangeCommand;
+public sealed record GetTradesCmd(string Sku, int Limit, TaskCompletionSource<object> Tcs) : IExchangeCommand;
+
+
