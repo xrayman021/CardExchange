@@ -11,7 +11,7 @@ using CardExchange.core.Domain;
 using CardExchange.core.OrderBooks;
 
 public enum Side { Buy, Sell }
-public enum OrderStatus { Open, Cancelled }
+public enum OrderStatus { Open, PartiallyFilled, Filled, Cancelled }
 
 public sealed class Order
 {

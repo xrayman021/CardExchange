@@ -125,6 +125,8 @@ public sealed class ExchangeHost : BackgroundService
                                     c.Tcs.SetResult(new { ok = false });
                                     break;
                                 }
+                                var book = _state.GetBook(order.Sku);
+                                book.Remove(order);
 
                                 // Release remaining holds
                                 var acct = _state.GetOrCreateAccount(c.UserId);
@@ -222,7 +224,7 @@ public sealed class ExchangeHost : BackgroundService
             // Lazy skip cancelled makers (if you later support deep cancels)
             if (maker.Status != OrderStatus.Open)
             {
-                book.DequeueBestOpposite(incoming.Side);
+                book.RemoveBestOppositeFront(incoming.Side);
                 continue;
             }
 
@@ -246,7 +248,7 @@ public sealed class ExchangeHost : BackgroundService
             if (maker.QtyRemaining == 0)
             {
                 maker.Status = OrderStatus.Cancelled; // “inactive”; you can add FILLED status later
-                book.DequeueBestOpposite(incoming.Side);
+                book.RemoveBestOppositeFront(incoming.Side);
             }
 
             if (incoming.QtyRemaining == 0)
